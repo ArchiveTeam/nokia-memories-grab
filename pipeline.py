@@ -192,9 +192,9 @@ class WgetArgs(object):
 
         item_type, item_value = item["item_name"].split(':')
 
-        if item_type == "page":
+        if item_type == "cinemagraph":
             wget_args.append("http://memories.nokia.com/r/images/{0}".format(item_value))
-        elif item_type == "media":
+        elif item_type == "cinemagraph-gif":
             wget_args.append("http://media.memories.nokia.com/media/{0}.gif".format(item_value))
             wget_args.append("http://media.memories.nokia.com/media/{0}.mp4".format(item_value))
         else:
