@@ -177,8 +177,8 @@ class WgetArgs(object):
             "--truncate-output",
             "-e", "robots=off",
             "--rotate-dns",
-            "--recursive", "--level=inf",
-            "--no-parent",
+            # "--recursive", "--level=inf",
+            # "--no-parent",
             "--page-requisites",
             "--timeout", "60",
             "--tries", "inf",
@@ -195,7 +195,8 @@ class WgetArgs(object):
         if item_type == "page":
             wget_args.append("http://memories.nokia.com/r/images/{0}".format(item_value))
         elif item_type == "media":
-            wget_args.append("http://media.memories.nokia.com/media/{0}".format(item_value))
+            wget_args.append("http://media.memories.nokia.com/media/{0}.gif".format(item_value))
+            wget_args.append("http://media.memories.nokia.com/media/{0}.mp4".format(item_value))
         else:
             raise Exception('unknown item type')
 
@@ -254,9 +255,11 @@ pipeline = Pipeline(
         id_function=stats_id_function,
     ),
     MoveFiles(),
-    LimitConcurrent(NumberConfigValue(min=1, max=4, default="1",
-        name="shared:rsync_threads", title="Rsync threads",
-        description="The maximum number of concurrent uploads."),
+    LimitConcurrent(
+        NumberConfigValue(
+            min=1, max=4, default="1",
+            name="shared:rsync_threads", title="Rsync threads",
+            description="The maximum number of concurrent uploads."),
         UploadWithTracker(
             "http://%s/%s" % (TRACKER_HOST, TRACKER_ID),
             downloader=downloader,
@@ -270,7 +273,7 @@ pipeline = Pipeline(
                 "--partial",
                 "--partial-dir", ".rsync-tmp",
             ]
-            ),
+        ),
     ),
     SendDoneToTracker(
         tracker_url="http://%s/%s" % (TRACKER_HOST, TRACKER_ID),

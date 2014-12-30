@@ -13,14 +13,13 @@ read_file = function(file)
   end
 end
 
-
 wget.callbacks.httploop_result = function(url, err, http_stat)
   local status_code = http_stat["statcode"]
 
   url_count = url_count + 1
   io.stdout:write(url_count .. "=" .. status_code .. " " .. url["url"] .. ".  \n")
   io.stdout:flush()
-  
+
   if status_code == 0 or status_code >= 500 or
     (status_code >= 400 and status_code ~= 404 and status_code ~= 403) then
     io.stdout:write("\nServer returned "..http_stat.statcode..". Sleeping.\n")
@@ -62,14 +61,14 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
 
   if string.match(url, "//memories%.nokia%.com/") then
     local content = read_file(file)
-      
-      for extra_url in string.gmatch(content, 'poster="(https?://media.memories.nokia.com/media/[^"]+%.jpg)"') do
-        table.insert(urls, { url=extra_url })
-      end
-      for extra_url in string.gmatch(content, 'source src="http://media.memories.nokia.com/media/[^"]+%.mp4"') do
-        table.insert(urls, { url=extra_url })
-      end
+
+    for extra_url in string.gmatch(content, 'poster="(https?://media.memories.nokia.com/media/[^"]+%.jpg)"') do
+      table.insert(urls, { url=extra_url })
     end
+    for extra_url in string.gmatch(content, 'source src="(http://media.memories.nokia.com/media/[^"]+%.mp4)"') do
+      table.insert(urls, { url=extra_url })
+    end
+  end
 
   return urls
 end
